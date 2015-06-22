@@ -1,0 +1,24 @@
+{
+  "name": "elasticsearch-scroll-stream",
+  "version": "1.0.0",
+  "description": "Creates readable stream for scrolling through elasticsearch dataset, abstraction over elasticsearch-js",
+  "main": "./lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AVVS/elasticsearch-scroll-stream.git"
+  },
+  "keywords": [
+    "elasticsearch",
+    "stream",
+    "scroll"
+  ],
+  "author": "Vitaly Aminev <v@aminev.me>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AVVS/elasticsearch-scroll-stream/issues"
+  },
+  "homepage": "https://github.com/AVVS/elasticsearch-scroll-stream#readme"
+}
