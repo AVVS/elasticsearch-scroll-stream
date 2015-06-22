@@ -4,7 +4,9 @@
   "description": "Creates readable stream for scrolling through elasticsearch dataset, abstraction over elasticsearch-js",
   "main": "./lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "make",
+    "prebulish": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -20,5 +22,13 @@
   "bugs": {
     "url": "https://github.com/AVVS/elasticsearch-scroll-stream/issues"
   },
-  "homepage": "https://github.com/AVVS/elasticsearch-scroll-stream#readme"
+  "homepage": "https://github.com/AVVS/elasticsearch-scroll-stream#readme",
+  "devDependencies": {
+    "babel": "^5.6.4",
+    "elasticsearch": "^5.0.0"
+  },
+  "dependencies": {
+    "bluebird": "^2.9.30",
+    "readable-stream": "^2.0.1"
+  }
 }
