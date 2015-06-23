@@ -2,6 +2,9 @@
 
 require('babel/register')();
 
+var chai = require('chai');
+var expect = chai.expect;
+
 describe('es-scroll-stream', function () {
 
     var Promise = require('bluebird');
@@ -63,12 +66,14 @@ describe('es-scroll-stream', function () {
 
             var consumed = false;
             var requestsInProgress = 0;
+            var objects = [];
 
             stream.on('log', console.log.bind(console));
 
             function onEnd() {
                 consumed = true;
                 if (requestsInProgress === 0) {
+                    expect(objects.length).to.be.eq(5000);
                     resolve();
                 }
             }
@@ -82,6 +87,8 @@ describe('es-scroll-stream', function () {
                     requestsInProgress++;
 
                     return Promise.delay(300).then(function () {
+                        objects.push(object);
+
                         if (--requestsInProgress === 0 && consumed) {
                             return resolve();
                         }

@@ -20,7 +20,8 @@ import ESStream from 'elasticsearch-scroll-stream';
 import elasticsearch from 'elasticsearch';
 
 const ES_SHARDS = 144;
-const ES_EXHAUST_RATIO = 3;
+const ES_RATIO_HIGH = 3;
+const ES_EXHAUST_RATIO = 0.5;
 const esClient = new elasticsearch.Client(...);
 const query = {
     index: 'name_of_index',
@@ -37,11 +38,12 @@ const opts = {
     client: esClient,
     query: query,
     // we need to make sure that ES scroll request is completed before we exhaust buffers
-    highWaterMark: query.body.size * ES_SHARDS * ES_EXHAUST_RATIO
+    highWaterMark: query.body.size * ES_SHARDS * ES_RATIO_HIGH,
+    lowWaterMark: query.body.size * ES_SHARDS * ES_EXHAUST_RATIO
 };
 
 const readableStream = new ESStream(opts);
-let dataReady, streamConsumed, streamError;
+let processData, streamConsumed, streamError;
 
 streamConsumed = function () {
     callback();
@@ -52,11 +54,19 @@ streamError = function (err) {
     callback(err);
 }
 
+processData = function () {
+    let doc = readable.read();
+    if (!doc) {
+        return;
+    }
+
+    // do something, if op is async, one need to implement flags for in-flight requests
+    // and end of operations. For an example - see tests
+}
+
 readableStream.on('end', streamConsumed);
 readableStream.on('error', streamError);
-readable.on('readable', function processData() {
-    let chunk = readable.read(100);
-    // do smth
-});
+readable.on('readable', processData);
 
+processData();
 ```
