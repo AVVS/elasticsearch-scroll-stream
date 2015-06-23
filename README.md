@@ -8,7 +8,7 @@ are cpu bound and not IO bound
 
 ## Install
 
-`npm install -S elasticsearch-scroll-stream`
+`npm install -S es-scroll-stream`
 
 ## Usage
 
@@ -16,7 +16,7 @@ are cpu bound and not IO bound
 'use strict';
 
 import Promise from 'bluebird';
-import ESStream from 'elasticsearch-scroll-stream';
+import ESStream from 'es-scroll-stream';
 import elasticsearch from 'elasticsearch';
 
 const ES_SHARDS = 144;
