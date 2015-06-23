@@ -4,7 +4,7 @@
   "description": "Creates readable stream for scrolling through elasticsearch dataset, abstraction over elasticsearch-js",
   "main": "./lib/index.js",
   "scripts": {
-    "test": "multi='list=- xunit=test-report.xml' ./node_modules/.bin/mocha -R mocha-multi --timeout=10000",
+    "test": "multi='list=- xunit=test-report.xml' ./node_modules/.bin/mocha -R mocha-multi --timeout=30000",
     "build": "make",
     "prebulish": "npm run build"
   },

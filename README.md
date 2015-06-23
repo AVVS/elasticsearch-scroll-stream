@@ -1,5 +1,7 @@
 # Elasticsearch scroll stream
 
+[![Build Status](https://travis-ci.org/AVVS/elasticsearch-scroll-stream.svg?branch=master)](https://travis-ci.org/AVVS/elasticsearch-scroll-stream)
+
 Node.js stream adapter for elasticsearch scrolling. Often scrolling is heavier
 than the underlaying operations, so what we do here is make sure that there is always
 a pool of documents to read from, and when low watermark is hit we do another es
