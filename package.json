@@ -4,7 +4,7 @@
   "description": "Creates readable stream for scrolling through elasticsearch dataset, abstraction over elasticsearch-js",
   "main": "./lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "multi='list=- xunit=test-report.xml' ./node_modules/.bin/mocha -R mocha-multi --timeout=10000",
     "build": "make",
     "prebulish": "npm run build"
   },
@@ -25,7 +25,14 @@
   "homepage": "https://github.com/AVVS/elasticsearch-scroll-stream#readme",
   "devDependencies": {
     "babel": "^5.6.4",
-    "elasticsearch": "^5.0.0"
+    "babel-eslint": "^3.1.17",
+    "chai": "^3.0.0",
+    "elasticsearch": "^5.0.0",
+    "eslint": "^0.23.0",
+    "faker": "^2.1.5",
+    "lodash": "^3.9.3",
+    "mocha": "^2.2.5",
+    "mocha-multi": "^0.7.1"
   },
   "dependencies": {
     "bluebird": "^2.9.30",

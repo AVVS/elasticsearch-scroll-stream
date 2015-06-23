@@ -3,12 +3,13 @@
 import { Readable } from 'readable-stream';
 import Promise from 'bluebird';
 
-const Push = Array.prototype.push;
-
 class ESScrollStream extends Readable {
 
     constructor(opts) {
-        super({ objectMode: true });
+        super({
+            objectMode: true,
+            highWaterMark: opts.highWaterMark || 1000
+        });
 
         let { client, query } = opts;
 
@@ -17,7 +18,7 @@ class ESScrollStream extends Readable {
         }
 
         if (!query || !query.scroll) {
-            throw new Error('`opts.query` must be a valid elasticsearch scroll initiation request')
+            throw new Error('`opts.query` must be a valid elasticsearch scroll initiation request');
         }
 
         this.client = client;
@@ -28,63 +29,42 @@ class ESScrollStream extends Readable {
         // attempts
         this.retry = opts.retry || 3;
         if (typeof opts.retryFunc === 'function') {
-            this._retryAttempt = opts.retryFunc
+            this._retryAttempt = opts.retryFunc;
         }
 
         // buffer settings
         this.streamed = 0;
-        this._next = false;
-        this.hits = [];
-        this.lowWaterMark = opts.lowWaterMark || 1000;
+        this.lowWaterMark = this.lowWaterMark || 1000;
     }
 
-    _retryAttempt(atempt) {
+    _retryAttempt(attempt) {
         return Math.pow(attempt, 2) * 500;
     }
 
-    _read(size) {
-        let { hits:buffer, lowWaterMark } = this;
-        let { length:bufferLength } = buffer;
-        let pushed = true;
-
-        if (size <= bufferLength || (!this._next && bufferLength > 0)) {
-            buffer.splice(0, size).forEach(doc => {
-                this.push(doc);
-            });
-        } else {
-            pushed = false;
+    _read() {
+        if (this.currentRequest) {
+            this.pushRequested = true;
+            return;
         }
 
-        if (this._next && buffer.length <= lowWaterMark) {
-            if (this.currentRequest) {
-                this.currentRequest.then(function () {
-                    this._read(size);
-                });
-            } else {
-                this.currentRequest = this._fetchPage().then(
-                    function scrollSuccess() {
-                        this.currentRequest = null;
-                        if (!pushed) {
-                            this._read(size);
-                        }
-                    },
-                    function scrollError(err) {
-                        this.currentRequest = null;
-                        this.hits = [];
-                        this._next = false;
-                        this.emit('error', err);
-                    }
-                );
+        this.currentRequest = this._fetchPage().finally(function () {
+            this.currentRequest = null;
+
+            if (this._next !== false && (this.pushRequested || this._readableState.buffer.length < this.lowWaterMark)) {
+                this.pushRequested = false;
+                return this._read();
             }
-        }
+        });
     }
 
     _fetchPage(attempt=0) {
-        let { scrollId, client, query } = thos;
+        let { scrollId, client, query } = this;
         let promise;
 
         if (!scrollId) {
-            promise = client.search(query).bind(this);
+            promise = client.search(query).bind(this).tap(function (resp) {
+                this.emit('log', 'total elements ' + resp.hits.total);
+            });
         } else {
             promise = client
                 .scroll({ body: scrollId, scroll: query.scroll })
@@ -97,26 +77,34 @@ class ESScrollStream extends Readable {
                                 return this._fetchPage(attempt);
                             });
                     }
+
+                    throw err;
                 });
         }
-        
+
         return promise.then(function (response) {
             // set new scroll id
             this.scrollId = response._scroll_id;
 
             let { hits } = response;
-            let { hits:docs, total } = hits;
+            let { hits: docs, total } = hits;
             let { length } = docs;
 
-            if (length > 0) {
-                Push.apply(this.hits, docs);
+            if (this._next !== false && length > 0) {
+                docs.forEach(function (doc) {
+                    this.push(doc);
+                }, this);
             }
 
             this.streamed += length;
-            if (this.streamed >= total) {
+            if (this._next !== false && this.streamed >= total) {
                 this._next = false;
-                this.hits.push(null);
+                this.push(null);
             }
+        })
+        .catch(function scrollError(err) {
+            this._next = false;
+            this.emit('error', err);
         });
     }
 
@@ -132,4 +120,4 @@ class ESScrollStream extends Readable {
     }
 }
 
-export defaults ESScrollStream;
+export default ESScrollStream;
