@@ -63,7 +63,7 @@ class ESScrollStream extends Readable {
 
         if (!scrollId) {
             promise = client.search(query).bind(this).tap(function (resp) {
-                this.emit('log', 'total elements ' + resp.hits.total);
+                this.emit('total', resp.hits.total);
             });
         } else {
             promise = client

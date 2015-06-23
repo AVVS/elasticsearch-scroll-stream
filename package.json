@@ -1,6 +1,6 @@
 {
   "name": "es-scroll-stream",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Creates readable stream for scrolling through elasticsearch dataset, abstraction over elasticsearch-js",
   "main": "./lib/index.js",
   "scripts": {

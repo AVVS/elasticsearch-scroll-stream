@@ -66,6 +66,7 @@ processData = function () {
     // and end of operations. For an example - see tests
 }
 
+readableStream.on('total', console.log.bind(console, 'Total %d'));
 readableStream.on('end', streamConsumed);
 readableStream.on('error', streamError);
 readable.on('readable', processData);

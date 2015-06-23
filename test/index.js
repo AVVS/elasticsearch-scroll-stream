@@ -68,8 +68,6 @@ describe('es-scroll-stream', function () {
             var requestsInProgress = 0;
             var objects = [];
 
-            stream.on('log', console.log.bind(console));
-
             function onEnd() {
                 consumed = true;
                 if (requestsInProgress === 0) {
