@@ -1,12 +1,10 @@
 {
   "name": "es-scroll-stream",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Creates readable stream for scrolling through elasticsearch dataset, abstraction over elasticsearch-js",
   "main": "./lib/index.js",
   "scripts": {
-    "test": "multi='list=- xunit=test-report.xml' ./node_modules/.bin/mocha -R mocha-multi --timeout=30000",
-    "build": "make",
-    "prepublish": "npm run build"
+    "test": "multi='list=- xunit=test-report.xml' ./node_modules/.bin/mocha -R mocha-multi --timeout=30000"
   },
   "repository": {
     "type": "git",
@@ -24,8 +22,6 @@
   },
   "homepage": "https://github.com/AVVS/elasticsearch-scroll-stream#readme",
   "devDependencies": {
-    "babel": "^5.6.4",
-    "babel-eslint": "^3.1.17",
     "chai": "^3.0.0",
     "elasticsearch": "^5.0.0",
     "eslint": "^0.23.0",

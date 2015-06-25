@@ -1,7 +1,5 @@
 'use strict';
 
-require('babel/register')();
-
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -11,7 +9,7 @@ describe('es-scroll-stream', function () {
     var elasticsearch = require('elasticsearch');
     var faker = require('faker');
     var _ = require('lodash');
-    var ESStream = require('../src/index.js');
+    var ESStream = require('../lib/index.js');
 
     before('init es client', function () {
         this.elasticsearch = new elasticsearch.Client({
